@@ -1,20 +1,41 @@
 const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const fs = require('fs');
 
-const client = new Client();
+const SESSION_FILE_PATH = './wa-session.json';
+let sessionCfg;
+if (fs.existsSync(SESSION_FILE_PATH)) {
+    sessionCfg = require(SESSION_FILE_PATH);
+}
+
+const client = new Client({ puppeteer: { headless: true }, session: sessionCfg });
 
 client.on('qr', (qr) => {
     // Generate and scan this code with your phone
-    qrcode.generate('This will be a small QRCode, eh!', {small: true});
+    console.log('QR Received!')
+    qrcode.generate(qr, {small: true});
 });
 
 client.on('ready', () => {
     console.log('Client is ready!');
 });
 
+client.on('authenticated', (session) => {
+    console.log('AUTHENTICATED', session);
+    sessionCfg=session;
+    fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
+        if (err) {
+            console.error(err);
+        }
+    });
+});
+
 client.on('message', msg => {
     if (msg.body == '!ping') {
         msg.reply('pong');
+    }
+    else if(msg.body){
+        msg.reply('*BOT WA Auto Reply*\nPesan Anda akan dibalas secara berurutan dari bawah')
     }
 });
 
