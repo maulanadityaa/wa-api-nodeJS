@@ -92,7 +92,7 @@ client.on('message', msg => {
 <!-- CONTACT -->
 ## Contact
 
-Maulana - [@twitter_handle](https://twitter.com/waitasecs) - Instagram - [@maulanadityaa](https://instagram.com/maulanadityaa)
+Maulana - [@waitasecs](https://twitter.com/waitasecs) - Instagram - [@maulanadityaa](https://instagram.com/maulanadityaa)
 
 Project Link: [https://github.com/maulanadityaa/wa-api-nodeJS](https://github.com/maulanadityaa/wa-api-nodeJS)
 
