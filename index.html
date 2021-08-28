@@ -11,10 +11,12 @@
     <title>WA API NodeJS</title>
   </head>
   <body>
-    <h1>WhatsApp API NodeJS</h1>
+    <h1 class="text-center">WhatsApp API NodeJS</h1>
     <div id="app">
-        <h2>Scan QRCode on Your Smartphone</h2>
-        <img src="" class="rounded" alt="QR Code" id="qrcode">
+        <div class="text-center">
+            <p>Powered by You^_^</p>
+            <img src="" class="rounded" alt="QR Code" id="qrcode">
+        </div>
         <h3>Logs :</h3>
         <ul class="list-group" id='logs'></ul>
     </div>
@@ -30,9 +32,18 @@
                 $('#logs').append($('<li class="list-group-item">').text(msg))
             })
 
-            socket.on('qr', function(src){
-                $('#qrcode').attr('src', src)
-            })
+            socket.on('qr', function(src) {
+				$('#qrcode').attr('src', src);
+				$('#qrcode').show();
+			});
+
+			socket.on('ready', function(data) {
+				$('#qrcode').hide();
+			});
+
+			socket.on('authenticated', function(data) {
+				$('#qrcode').hide();
+			});
         })
     </script>
 
