@@ -1,5 +1,6 @@
 const { Client } = require('whatsapp-web.js');
 const express = require('express')
+const {body, validationResult} = require('express-validator')
 const socketIO = require('socket.io')
 const qrcode = require('qrcode');
 const fs = require('fs');
@@ -65,7 +66,23 @@ io.on('connection', function(socket){
 })
 
 //Send Messages
-app.post('/send-msg', (req, res) => {
+app.post('/send-msg', [
+    body('nohp').notEmpty(),
+    body('msg').notEmpty(),
+], (req, res) => {
+    const errors = validationResult(req).formatWith(({
+        msg
+      }) => {
+        return msg;
+      });
+    
+      if (!errors.isEmpty()) {
+        return res.status(422).json({
+          status: false,
+          message: errors.mapped()
+        });
+      }
+
     const nohp = req.body.nohp
     const msg = req.body.msg
 
