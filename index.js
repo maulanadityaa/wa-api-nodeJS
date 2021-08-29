@@ -71,6 +71,12 @@ io.on("connection", function (socket) {
   });
 });
 
+const checkRegisteredNumber = async function(nohp) {
+    const isRegistered = await client.isRegisteredUser(nohp)
+
+    return isRegistered
+}
+
 //Send Messages
 app.post(
   "/send-msg",
@@ -89,6 +95,14 @@ app.post(
 
     const nohp = noHpFormatter(req.body.nohp);
     const msg = req.body.msg;
+
+    const isRegisteredNumber = await checkRegisteredNumber(nohp)
+    if(!isRegisteredNumber){
+        return res.status(422).json({
+            status: false,
+            message: 'Nomor belum Terdaftar'
+        })
+    }
 
     client
       .sendMessage(nohp, msg)
