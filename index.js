@@ -72,16 +72,15 @@ io.on("connection", function (socket) {
 });
 
 const checkRegisteredNumber = async function(nohp) {
-    const isRegistered = await client.isRegisteredUser(nohp)
-
-    return isRegistered
-}
+    const isRegistered = await client.isRegisteredUser(nohp);
+    return isRegistered;
+  }
 
 //Send Messages
 app.post(
   "/send-msg",
   [body("nohp").notEmpty(), body("msg").notEmpty()],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req).formatWith(({ msg }) => {
       return msg;
     });
@@ -96,7 +95,7 @@ app.post(
     const nohp = noHpFormatter(req.body.nohp);
     const msg = req.body.msg;
 
-    const isRegisteredNumber = await checkRegisteredNumber(nohp)
+    const isRegisteredNumber = await checkRegisteredNumber(nohp);
     if(!isRegisteredNumber){
         return res.status(422).json({
             status: false,
