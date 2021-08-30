@@ -1,11 +1,12 @@
-const { Client } = require("whatsapp-web.js");
+const { Client, MessageMedia } = require("whatsapp-web.js");
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const socketIO = require("socket.io");
 const qrcode = require("qrcode");
 const fs = require("fs");
 const http = require("http");
-const { noHpFormatter } = require('./helpers/formatter')
+const { noHpFormatter } = require("./helpers/formatter");
+const fileUpload = require("express-fileupload");
 
 const app = express();
 const server = http.createServer(app);
@@ -13,6 +14,11 @@ const io = socketIO(server);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  fileUpload({
+    debug: true,
+  })
+);
 
 const SESSION_FILE_PATH = "./wa-session.json";
 let sessionCfg;
@@ -25,32 +31,32 @@ app.get("/", (req, res) => {
 });
 
 const client = new Client({
-    restartOnAuthFail: true,
-    puppeteer: {
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process', // <- this one doesn't works in Windows
-        '--disable-gpu'
-      ],
-    },
-    session: sessionCfg
-  });
+  restartOnAuthFail: true,
+  puppeteer: {
+    headless: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-accelerated-2d-canvas",
+      "--no-first-run",
+      "--no-zygote",
+      "--single-process", // <- this one doesn't works in Windows
+      "--disable-gpu",
+    ],
+  },
+  session: sessionCfg,
+});
 
 client.on("message", (msg) => {
   if (msg.body == "!ping") {
     msg.reply("pong");
   }
-//   else if (msg.body) {
-//     msg.reply(
-//       "*BOT WA Auto Reply*\nPesan Anda akan dibalas secara berurutan dari bawah"
-//     );
-//   }
+  //   else if (msg.body) {
+  //     msg.reply(
+  //       "*BOT WA Auto Reply*\nPesan Anda akan dibalas secara berurutan dari bawah"
+  //     );
+  //   }
 });
 
 client.initialize();
@@ -84,10 +90,10 @@ io.on("connection", function (socket) {
   });
 });
 
-const checkRegisteredNumber = async function(nohp) {
-    const isRegistered = await client.isRegisteredUser(nohp);
-    return isRegistered;
-  }
+const checkRegisteredNumber = async function (nohp) {
+  const isRegistered = await client.isRegisteredUser(nohp);
+  return isRegistered;
+};
 
 //Send Messages
 app.post(
@@ -109,11 +115,11 @@ app.post(
     const msg = req.body.msg;
 
     const isRegisteredNumber = await checkRegisteredNumber(nohp);
-    if(!isRegisteredNumber){
-        return res.status(422).json({
-            status: false,
-            message: 'Nomor belum Terdaftar'
-        })
+    if (!isRegisteredNumber) {
+      return res.status(422).json({
+        status: false,
+        message: "Nomor belum Terdaftar",
+      });
     }
 
     client
@@ -132,6 +138,30 @@ app.post(
       });
   }
 );
+
+//Send media
+app.post("/send-media", (req, res) => {
+  const nohp = noHpFormatter(req.body.nohp);
+  const caption = req.body.caption;
+  const file = req.files.file
+
+  const media = new MessageMedia(file.mimetype, file.data.toString('base64'), file.name)
+
+  client
+      .sendMessage(nohp, media, {caption: caption})
+      .then((response) => {
+        res.status(200).json({
+          status: true,
+          response: response,
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          status: false,
+          response: err,
+        });
+      });
+});
 
 server.listen(5000, function () {
   console.log("Listen to Port : 5000");
