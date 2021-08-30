@@ -8,6 +8,8 @@ const http = require("http");
 const { noHpFormatter } = require("./helpers/formatter");
 const fileUpload = require("express-fileupload");
 
+const port = process.env.PORT || 5000
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
@@ -163,6 +165,6 @@ app.post("/send-media", (req, res) => {
       });
 });
 
-server.listen(5000, function () {
-  console.log("Listen to Port : 5000");
+server.listen(port, function () {
+  console.log("Listen to Port : " + port);
 });
