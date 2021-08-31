@@ -37,14 +37,14 @@
         </div>
         <div class="mb-3">
           <label for="description-client" class="form-label">Masukkan Deskripsi</label>
-          <textarea rows="3" class="form-control" id="description-client" aria-describedby="ClientDesc">
-              </div>
-              <button type="submit" class="btn btn-primary">Tambah Client</button>
-            </form>
+          <textarea rows="3" class="form-control" id="description-client" aria-describedby="ClientDesc"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Tambah Client</button>
+    </form>
     </div>
-    <div class="container-client text-center">
+    <div class="container-client">
       <h3 class="title"></h3>
-			<p class="description"></p>
+	  <p class="description"></p>
       <img src="" class="rounded" alt="QR Code" id="qrcode">
       <h3>Logs :</h3>
       <ul class="list-group" id='logs'></ul>
@@ -59,7 +59,7 @@
         var socket = io()
 
         // Ketika button tambah diklik
-			$('.submit').click(function() {
+			$('.btn btn-primary').click(function() {
 				var clientId = $('#id-client').val();
 				var clientDescription = $('#description-client').val();
 				var template = $('.client').first().clone()
@@ -105,7 +105,7 @@
 											   .addClass(clientId);
 					template.find('.title').html(clientId);
 					template.find('.description').html(clientDescription);
-					$('.client-container').append(template);
+					$('.container-client').append(template);
 
 					if (session.ready) {
 						$(`.client.${session.id} .logs`).append($('<li>').text('Whatsapp is ready!'));

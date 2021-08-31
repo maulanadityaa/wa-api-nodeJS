@@ -73,15 +73,11 @@ io.on("connection", function (socket) {
       socket.emit("message", "QR Received, Please Scan");
     });
   });
-
-  client.on("ready", () => {
-    socket.emit("message", "WhatsApp Client is Ready to Use!");
-    socket.emit("ready", "WhatsApp Client is Ready to Use!");
-  });
-
+  
   client.on("authenticated", (session) => {
     socket.emit("authenticated", "WhatsApp Client is authenticated!");
     socket.emit("ready", "WhatsApp Client is authenticated!");
+    socket.emit("message", "WhatsApp Client is authenticated!");
     console.log("AUTHENTICATED", session);
     sessionCfg = session;
     fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
@@ -90,6 +86,12 @@ io.on("connection", function (socket) {
       }
     });
   });
+  
+  client.on("ready", () => {
+    socket.emit("message", "WhatsApp Client is Ready to Use!");
+    socket.emit("ready", "WhatsApp Client is Ready to Use!");
+  });
+
 });
 
 const checkRegisteredNumber = async function (nohp) {
