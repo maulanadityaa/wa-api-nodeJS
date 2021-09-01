@@ -2,7 +2,7 @@ const {Client} = require('pg')
 const { query } = require('express-validator');
 
 const client = new Client({
-    connectionString : 'postgres://drdbaarbvsvytx:dad143bddf11e5dab3036887812058e5949f07cf8dedb1dcd9dba5721afce005@ec2-18-215-44-132.compute-1.amazonaws.com:5432/d1abcv7lgeig4t',
+    connectionString : process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     }
