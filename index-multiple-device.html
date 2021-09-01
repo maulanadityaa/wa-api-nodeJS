@@ -1,145 +1,175 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
+      crossorigin="anonymous"
+    />
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-
-  <title>WA API NodeJS</title>
-  <style>
-    .client {
-      border: 1px solid #ccc;
-      padding: 20px;
-      box-sizing: border-box;
-      display: inline-block;
-      margin: 10px;
-    }
-    .hide {
-      display: none;
-    }
+    <title>WA API NodeJS</title>
+    <style>
+      .client {
+        border: 1px solid #ccc;
+        padding: 20px;
+        box-sizing: border-box;
+        display: inline-block;
+        margin: 10px;
+      }
+      .hide {
+        display: none;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-  <h1 class="text-center">WhatsApp API NodeJS</h1>
-  <div id="app">
-    <div class="text-center">
-      <p>Powered by You^_^</p>
-      <form>
-        <div class="mb-3">
-          <label for="id-client" class="form-label">Masukkan ID</label>
-          <input type="text" class="form-control" id="id-client" aria-describedby="ClientID">
-        </div>
-        <div class="mb-3">
-          <label for="description-client" class="form-label">Masukkan Deskripsi</label>
-          <textarea rows="3" class="form-control" id="description-client" aria-describedby="ClientDesc"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Tambah Client</button>
-    </form>
-    </div>
-    <div class="container-client">
+  <body>
+    <h1 class="text-center">WhatsApp API NodeJS</h1>
+    <div id="app">
+      <div class="text-center">
+        <p>Powered by You^_^</p>
+        <form>
+          <div class="mb-3">
+            <label for="id-client" class="form-label">Masukkan ID</label>
+            <input
+              type="text"
+              class="form-control"
+              id="id-client"
+              aria-describedby="ClientID"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="description-client" class="form-label"
+              >Masukkan Deskripsi</label
+            >
+            <textarea
+              rows="3"
+              class="form-control"
+              id="description-client"
+              aria-describedby="ClientDesc"
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Tambah Client</button>
+        </form>
+      </div>
+      <!-- <div class="container-client">
       <h3 class="title"></h3>
 	  <p class="description"></p>
       <img src="" class="rounded" alt="QR Code" id="qrcode">
       <h3>Logs :</h3>
       <ul class="list-group" id='logs'></ul>
+    </div> -->
+      <hr />
+      <div class="client-container">
+        <div class="client hide">
+          <h3 class="title"></h3>
+          <p class="description"></p>
+          <img src="" class="rounded" alt="QR Code" id="qrcode">
+          <h3>Logs:</h3>
+          <ul class="list-group" id="logs"></ul>
+        </div>
+      </div>
     </div>
-  </div>
 
     <!-- Optional JavaScript; choose one of the two! -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.min.js" integrity="sha512-fB746S+jyTdN2LSWbYSGP2amFYId226wpOeV4ApumcDpIttPxvk1ZPOgnwqwQziRAtZkiFJVx9F64GLAtoIlCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.min.js"
+      integrity="sha512-fB746S+jyTdN2LSWbYSGP2amFYId226wpOeV4ApumcDpIttPxvk1ZPOgnwqwQziRAtZkiFJVx9F64GLAtoIlCQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script>
       $(document).ready(function () {
-        var socket = io()
+        var socket = io();
 
         // Ketika button tambah diklik
-			$('.btn btn-primary').click(function() {
-				var clientId = $('#id-client').val();
-				var clientDescription = $('#description-client').val();
-				var template = $('.client').first().clone()
-										   .removeClass('hide')
-										   .addClass(clientId);
-				template.find('.title').html(clientId);
-				template.find('.description').html(clientDescription);
-				$('.container-client').append(template);
+        $(".btn").click(function () {
+          var clientId = $("#id-client").val();
+          var clientDescription = $("#description-client").val();
+          var template = $(".client")
+            .first()
+            .clone()
+            .removeClass("hide")
+            .addClass(clientId);
+          template.find(".title").html(clientId);
+          template.find(".description").html(clientDescription);
+          $(".client-container").append(template);
 
-				socket.emit('create-session', {
-					id: clientId,
-					description: clientDescription
-				});
-			});
-
-        socket.on('message', function (msg) {
-          $('#logs').append($('<li class="list-group-item">').text(msg))
-        })
-
-        socket.on('qr', function (src) {
-          $('#qrcode').attr('src', src);
-          $('#qrcode').show();
+          socket.emit("create-session", {
+            id: clientId,
+            description: clientDescription,
+          });
         });
 
-        socket.on('ready', function (data) {
-          $('#qrcode').hide();
+        socket.on("init", function (data) {
+          $(".client-container .client").not(":first").remove();
+          console.log(data);
+          for (var i = 0; i < data.length; i++) {
+            var session = data[i];
+
+            var clientId = session.id;
+            var clientDescription = session.description;
+            var template = $(".client")
+              .first()
+              .clone()
+              .removeClass("hide")
+              .addClass(clientId);
+            template.find(".title").html(clientId);
+            template.find(".description").html(clientDescription);
+            $(".client-container").append(template);
+
+            if (session.ready) {
+              $(`.client.${session.id} #logs`).append(
+                $('<li class="list-group-item">').text("Whatsapp is ready!")
+              );
+            } else {
+              $(`.client.${session.id} #logs`).append(
+                $('<li class="list-group-item">').text("Connecting...")
+              );
+            }
+          }
         });
 
-        socket.on('authenticated', function (data) {
-          $('#qrcode').hide();
+        socket.on("remove-session", function (id) {
+          $(`.client.${id}`).remove();
         });
 
-        socket.on('init', function(data) {
-				$('.container-client .client').not(':first').remove();
-				console.log(data);
-				for (var i = 0; i < data.length; i++) {
-					var session = data[i];
+        socket.on("message", function (data) {
+          $(`.client.${data.id} #logs`).append($('<li class="list-group-item">').text(data.text));
+        });
 
-					var clientId = session.id;
-					var clientDescription = session.description;
-					var template = $('.client').first().clone()
-											   .removeClass('hide')
-											   .addClass(clientId);
-					template.find('.title').html(clientId);
-					template.find('.description').html(clientDescription);
-					$('.container-client').append(template);
+        socket.on("qr", function (data) {
+          $(`.client.${data.id} #qrcode`).attr("src", data.src);
+          $(`.client.${data.id} #qrcode`).show();
+        });
 
-					if (session.ready) {
-						$(`.client.${session.id} .logs`).append($('<li>').text('Whatsapp is ready!'));
-					} else {
-						$(`.client.${session.id} .logs`).append($('<li>').text('Connecting...'));
-					}
-				}
-			});
+        socket.on("ready", function (data) {
+          $(`.client.${data.id} #qrcode`).hide();
+        });
 
-			socket.on('remove-session', function(id) {
-				$(`.client.${id}`).remove();
-			});
-
-			socket.on('message', function(data) {
-				$(`.client.${data.id} .logs`).append($('<li>').text(data.text));
-			});
-
-			socket.on('qr', function(data) {
-				$(`.client.${data.id} #qrcode`).attr('src', data.src);
-				$(`.client.${data.id} #qrcode`).show();
-			});
-
-			socket.on('ready', function(data) {
-				$(`.client.${data.id} #qrcode`).hide();
-			});
-
-			socket.on('authenticated', function(data) {
-				$(`.client.${data.id} #qrcode`).hide();
-			});
-      })
+        socket.on("authenticated", function (data) {
+          $(`.client.${data.id} #qrcode`).hide();
+        });
+      });
     </script>
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- Option 2: Separate Popper and Bootstrap JS -->
     <!--

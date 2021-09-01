@@ -25,20 +25,8 @@ app.get("/", (req, res) => {
 });
 
 const sessions = [];
-const SESSIONS_FILE = "./whatsapp-sessions.json";
+const SESSIONS_FILE = "./wa-sessions.json";
 
-const createSessionsFileIfNotExists = function () {
-  if (!fs.existsSync(SESSIONS_FILE)) {
-    try {
-      fs.writeFileSync(SESSIONS_FILE, JSON.stringify([]));
-      console.log("Sessions file created successfully.");
-    } catch (err) {
-      console.log("Failed to create sessions file: ", err);
-    }
-  }
-};
-
-createSessionsFileIfNotExists();
 
 const setSessionsFile = function (sessions) {
   fs.writeFile(SESSIONS_FILE, JSON.stringify(sessions), function (err) {
@@ -54,7 +42,7 @@ const getSessionsFile = function () {
 
 const createSession = function (id, description) {
   console.log("Creating session: " + id);
-  const SESSION_FILE_PATH = `./whatsapp-session-${id}.json`;
+  const SESSION_FILE_PATH = `./wa-sessions${id}.json`;
   let sessionCfg;
   if (fs.existsSync(SESSION_FILE_PATH)) {
     sessionCfg = require(SESSION_FILE_PATH);
