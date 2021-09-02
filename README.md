@@ -39,10 +39,10 @@
 
 ### Built With
 
-* [whatsapp-web.js]()
-* [express]()
-* [socket.io]()
-* [qrcode]()
+* [whatsapp-web.js](guide.wwebjs.dev/)
+* [express](expressjs.com/)
+* [socket.io](github.com/socketio/socket.io#readme)
+* [qrcode](github.com/soldair/node-qrcode)
 
 
 
@@ -69,7 +69,15 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    npm install
    ```
-
+3. Import database to your PGAdmin
+4. Run
+   ```sh
+   npm run start:dev
+   ```
+5. Open your browser and go to address
+   ```sh
+   http://localhost:5000
+   ```
 
 
 <!-- USAGE EXAMPLES -->
@@ -88,6 +96,16 @@ client.on('message', msg => {
     }
 });
 ```
+
+ChatBot
+
+**Message**|**Reply**
+:-----:|:-----:
+halo|hai
+selamat pagi|pagii!
+malam|malam juga
+apa kabar?|baik, kamu bagaimana?
+assalamuailkum|waalaikumsalam
 
 <!-- CONTACT -->
 ## Contact
