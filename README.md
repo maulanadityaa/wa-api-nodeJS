@@ -39,10 +39,10 @@
 
 ### Built With
 
-* [whatsapp-web.js](guide.wwebjs.dev/)
-* [express](expressjs.com/)
-* [socket.io](github.com/socketio/socket.io#readme)
-* [qrcode](github.com/soldair/node-qrcode)
+* [whatsapp-web.js](https://guide.wwebjs.dev/)
+* [express](https://expressjs.com/)
+* [socket.io](https://github.com/socketio/socket.io#readme)
+* [qrcode](https://github.com/soldair/node-qrcode)
 
 
 
@@ -58,6 +58,8 @@ This is an example of how to list things you need to use the software and how to
   ```sh
   npm install npm@latest -g
   ```
+* pgAdmin or Other PostgreSQL Database Application
+  [pgAdmin4 download](https://www.pgadmin.org/download/)
 
 ### Installation
 
@@ -69,7 +71,7 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    npm install
    ```
-3. Import database to your PGAdmin
+3. Import `wa_replies.sql` to your PGAdmin
 4. Run
    ```sh
    npm run start:dev
