@@ -48,7 +48,8 @@ const removeSession = () => {
 const getReply = async (keyword) => {
   try {
     const res = await client.query(
-      'SELECT * FROM wa_replies WHERE keyword = $1', [keyword]
+      "SELECT * FROM wa_replies WHERE keyword = $1",
+      [keyword]
     );
     if (res.rows.length) return res.rows[0].reply;
     return false;
