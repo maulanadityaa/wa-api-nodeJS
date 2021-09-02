@@ -55,15 +55,29 @@ const db = require("./helpers/db");
     session: savedSession,
   });
 
-  client.on("message", (msg) => {
-    if (msg.body == "!ping") {
-      msg.reply("pong");
+  client.on("message", async (msg) => {
+    const keyword = msg.body.toLowerCase()
+    const replyMessage = await db.getReply(keyword)
+
+    if(replyMessage !== false){
+      msg.reply(replyMessage)
     }
-    //   else if (msg.body) {
-    //     msg.reply(
-    //       "*BOT WA Auto Reply*\nPesan Anda akan dibalas secara berurutan dari bawah"
-    //     );
-    //   }
+    else if (msg.body == '!groups') {
+      client.getChats().then(chats => {
+        const groups = chats.filter(chat => chat.isGroup);
+  
+        if (groups.length == 0) {
+          msg.reply('You have no group yet.');
+        } else {
+          let replyMsg = '*YOUR GROUPS*\n\n';
+          groups.forEach((group, i) => {
+            replyMsg += `ID: ${group.id._serialized}\nName: ${group.name}\n\n`;
+          });
+          replyMsg += '_You can use the group id to send a message to the group._'
+          msg.reply(replyMsg);
+        }
+      });
+    }
   });
 
   client.initialize();
