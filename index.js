@@ -3,7 +3,6 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const socketIO = require("socket.io");
 const qrcode = require("qrcode");
-// const fs = require("fs");
 const http = require("http");
 const { noHpFormatter } = require("./helpers/formatter");
 const fileUpload = require("express-fileupload");
@@ -21,12 +20,6 @@ app.use(
     debug: true,
   })
 );
-
-// const SESSION_FILE_PATH = "./wa-session.json";
-// let sessionCfg;
-// if (fs.existsSync(SESSION_FILE_PATH)) {
-//   sessionCfg = require(SESSION_FILE_PATH);
-// }
 
 const db = require("./helpers/db");
 
@@ -65,7 +58,6 @@ const db = require("./helpers/db");
     else if (msg.body == '!groups') {
       client.getChats().then(chats => {
         const groups = chats.filter(chat => chat.isGroup);
-  
         if (groups.length == 0) {
           msg.reply('You have no group yet.');
         } else {
@@ -92,19 +84,6 @@ const db = require("./helpers/db");
         socket.emit("message", "QR Received, Please Scan");
       });
     });
-
-    // client.on("authenticated", (session) => {
-    //   socket.emit("authenticated", "WhatsApp Client is authenticated!");
-    //   socket.emit("ready", "WhatsApp Client is authenticated!");
-    //   socket.emit("message", "WhatsApp Client is authenticated!");
-    //   console.log("AUTHENTICATED", session);
-    //   sessionCfg = session;
-    //   fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
-    //     if (err) {
-    //       console.error(err);
-    //     }
-    //   });
-    // });
 
     client.on('authenticated', (session) => {
       socket.emit('authenticated', 'Whatsapp is authenticated!');
